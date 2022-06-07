@@ -1,0 +1,9 @@
+Chocolate 1:plain chocolate,double chocolate,jaffa,mint chocolate,red velvet
+Vanilla 2:plain vanilla,vanilla fondant,vanilla buttercream,vanilla mascarpone,vanilla citrus
+Caramel 3:dulce de leche,salted caramel,caramel mango
+Banana 4:plain banana,banana foster,banana cream cheese
+Lemon 5:plain lemon,lemon yoghurt,lemon coconut
+Tea 6:matcha green tea,hojicha
+Coffee 7:espresso,mocha,coffee walnut
+Exotic 8:plain durian,durian extra,jackfruit kiwano
+Special 9:opera,pavlova,mille crepe,strawberry shortcake,mixed berry cheesecake
