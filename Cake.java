@@ -29,6 +29,8 @@ public class Cake {
     }
 
     public String toString(){
+        //Return the Cake details as a string
+        //Used String.format() to get the 2 decimal places for the price
         return "Order: " + this.noOfLayers + "-layer "+ this.flavour+ " cake   Dietary requirements: "+ this.dietaryReq + "   Cake Price: $"+ String.format("%.2f", this.price);
     }
 
