@@ -2,12 +2,15 @@ import java.io.IOException;
 
 public class Interact {
     public static void main(String[] args) throws IOException {
+        String _userIn;
         char userIn;
         //Start of user interactive program
         System.out.println("Welcome to Cakereations");
         //print options
         Advancedmethods.printMenu();
-        userIn = ScannerObj.cakeInput.nextLine().charAt(0);
+        _userIn = ScannerObj.cakeInput.nextLine();
+        _userIn = _userIn.toUpperCase();
+        userIn = _userIn.charAt(0);
         System.out.println();
         while(userIn != 'Q'){
             Advancedmethods.executeMenu(userIn);
@@ -20,9 +23,12 @@ public class Interact {
                     Advancedmethods.printMenu();
                 }
             System.out.println();
-            userIn = ScannerObj.cakeInput.nextLine().charAt(0);
+            _userIn = ScannerObj.cakeInput.nextLine();
+            _userIn = _userIn.toUpperCase();
+            userIn = _userIn.charAt(0);
             System.out.println();
         }
-        ScannerObj.cakeInput.close();
     }
 }
+
+//157,express,clear
