@@ -1,9 +1,9 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Advancedmethods {
+public class ProcessOrder {
     //Created an ArrayList to make and store orders as we do not know how many cakes will be ordered
     static ArrayList <Cake> cakeList = new ArrayList<Cake>();
     static ArrayList <String> cakeMessage = new ArrayList<String>();
@@ -11,6 +11,7 @@ public class Advancedmethods {
     private static String pastry="";
     public static float writePrice=0;
     private static String express="";
+    private static final String flavoursInfoFile = "data/flavours.txt";
     //Menu for users to navigate through the program
     public static void printMenu() throws IOException{
         System.out.println("Click 'A' to start a new cake order.");
@@ -20,15 +21,43 @@ public class Advancedmethods {
         System.out.println("Click 'C' to checkout.");
         System.out.println("Click 'Q' to quit.");
     }
-    //Method to execute all the options available to the users in printMenu()
+
+    /**
+     * Method to execute all the options available to the users in printMenu().
+     * 
+     * Used switch statement instead of if-else as we need a default statement as well
+     * 
+     * @param userIn: options:
+     *                  - A: Adds a new cake
+     *                  - V: View the cart of added cakes
+     *                  - E: Edit any cakes from the cart
+     *                  - R: Remove any cakes from the cart
+     *                  - C: Checkout
+     *                  - Q: Quit program
+     * @throws IOException
+     */
     public static void executeMenu(char userIn) throws IOException {
         switch(userIn){
             case 'A' :
-                System.out.println("Chocolate 1:plain chocolate,double chocolate,jaffa,mint chocolate,red velvet\nVanilla 2:plain vanilla,vanilla fondant,vanilla buttercream,vanilla mascarpone,vanilla citrus\nCaramel 3:dulce de leche,salted caramel,caramel mango\nBanana 4:plain banana,banana foster,banana cream cheese\nLemon 5:plain lemon,lemon yoghurt,lemon coconut\nTea 6:matcha green tea,hojicha\nCoffee 7:espresso,mocha,coffee walnut\nExotic 8:plain durian,durian extra,jackfruit kiwano\nSpecial 9:opera,pavlova,mille crepe,strawberry shortcake,mixed berry cheesecake\n");
+            /**
+             * Created new file object in order to print the contents of "data/flavours.txt"
+             */
+            File flavours = new File(flavoursInfoFile);
+            Scanner readFlavour = new Scanner(flavours);
+            String t1 = "";
+            //Loop to print each line of the file.
+            for (int i = 0; i < 9; i++) {
+                t1 = readFlavour.nextLine();
+                System.out.println(t1);
+            }
+            System.out.println();
                 addCake();
+                System.out.println("Cake added!");
+                System.out.println();
                 break;
             case 'V' :
                 viewCart();
+                System.out.println();
                 break;
             case 'E' :
                 viewCart();
@@ -38,25 +67,14 @@ public class Advancedmethods {
                 }else{
                     System.out.println("Select cake number to edit: ");
                     String _cakeToEdit = ScannerObj.cakeInput.nextLine();
-                    checkInt(_cakeToEdit);
-                    while ((checkInt(_cakeToEdit) == false)||(_cakeToEdit.length()!=1)) {
-                        System.out.println("Enter valid number!");
-                        System.out.println("Select cake number to edit: ");
+                    //Used checkInt() method to validate the user input
+                    boolean checker=checkInt(_cakeToEdit,0,cakeList.size()+1,"Select cake number to edit: ");
+                    //If input is invalid, check input again till it is valid
+                    while (checker==false) {
                         _cakeToEdit = ScannerObj.cakeInput.nextLine();
+                        checker=checkInt(_cakeToEdit,0,cakeList.size()+1,"Select cake number to edit: ");
                     }
-                    int cakeToEdit=Integer.parseInt(_cakeToEdit);
-                    while (cakeList.size()<(cakeToEdit)) {
-                        System.out.println("Cake not found!");
-                        System.out.println("Select cake number to edit: ");
-                        _cakeToEdit = ScannerObj.cakeInput.nextLine();
-                    checkInt(_cakeToEdit);
-                    while ((checkInt(_cakeToEdit) == false)||(_cakeToEdit.length()!=1)) {
-                        System.out.println("Enter valid number!");
-                        System.out.println("Select cake number to edit: ");
-                        _cakeToEdit = ScannerObj.cakeInput.nextLine();
-                    }
-                    cakeToEdit=Integer.parseInt(_cakeToEdit);
-                    }
+                    int cakeToEdit=Integer.parseInt(_cakeToEdit);                   
                     editCake(cakeToEdit-1);
                 }
             break;
@@ -66,36 +84,33 @@ public class Advancedmethods {
                 if (cakeList.size()<1) {
                     System.out.println("There is no cake to be removed");
                 }else{
-                    System.out.println("Select cake number to edit: ");
+                    System.out.println("Select cake number to remove: ");
                     String _cakeToRemove = ScannerObj.cakeInput.nextLine();
-                    checkInt(_cakeToRemove);
-                    while ((checkInt(_cakeToRemove) == false)||(_cakeToRemove.length()!=1)) {
-                        System.out.println("Enter valid number!");
-                        System.out.println("Select cake number to edit: ");
+                    //Used checkInt() method to validate the user input
+                    boolean checker=checkInt(_cakeToRemove,0,cakeList.size()+1,"Select cake number to remove: ");
+                    //If input is invalid, check input again till it is valid
+                    while (checker==false) {
                         _cakeToRemove = ScannerObj.cakeInput.nextLine();
+                        checker=checkInt(_cakeToRemove,0,cakeList.size()+1,"Select cake number to remove: ");
                     }
                     int cakeToRemove=Integer.parseInt(_cakeToRemove);
-                    while (cakeList.size()<(cakeToRemove)) {
-                        System.out.println("Cake not found!");
-                        System.out.println("Select cake number to edit: ");
-                        _cakeToRemove = ScannerObj.cakeInput.nextLine();
-                    checkInt(_cakeToRemove);
-                    while ((checkInt(_cakeToRemove) == false)||(_cakeToRemove.length()!=1)) {
-                        System.out.println("Enter valid number!");
-                        System.out.println("Select cake number to edit: ");
-                        _cakeToRemove = ScannerObj.cakeInput.nextLine();
-                    }
-                    cakeToRemove=Integer.parseInt(_cakeToRemove);
-                    }
                     removeCake(cakeToRemove-1);
                 }
             break;
             case 'C' :
-                checkoutCake();
+                if (cakeList.size()<1) {
+                    System.out.println("There is no cake to checkout!");
+                }else{
+                    checkoutCake();
+                    System.out.println();
+                }
             break;
             default :
+            /**
+             * Default set for any input apart from available options
+             */
             System.out.println("Invalid input!");
-            System.out.println("Please choose the above given options!");
+            System.out.println("Please choose from the given options!");
         }
     }
     //Method to add cake to ArrayList
@@ -106,6 +121,11 @@ public class Advancedmethods {
         //Prompt user to enter flavour of choice
         System.out.println("Enter your choice of flavour: ");
         String flavour = ScannerObj.cakeInput.nextLine();
+        while (flavour.equals("")) {
+            System.out.println("Invalid input!");
+            System.out.println("Enter your choice of flavour: ");
+            flavour = ScannerObj.cakeInput.nextLine();
+        }
         flavour=flavour.toLowerCase();
         System.out.println();
         //Prompt user to enter number of layers
@@ -113,42 +133,39 @@ public class Advancedmethods {
         //Converted the String input for number of layers to Int
         //Did not take Int input directly as that may cause IOException
         String _noOfLayers = ScannerObj.cakeInput.nextLine();
-        checkInt(_noOfLayers);
-        while ((checkInt(_noOfLayers) == false)||(_noOfLayers.length()!=1)) {
-            System.out.println("Enter valid number!");
-            System.out.println("Enter number of layers(1-3): ");
+        //Used checkInt() method to validate the user input
+        boolean checker=checkInt(_noOfLayers,0,4,"Enter number of layers(1-3): ");
+        //If input is invalid, check input again till it is valid
+        while (checker==false) {
             _noOfLayers = ScannerObj.cakeInput.nextLine();
+            checker=checkInt(_noOfLayers,0,4,"Enter number of layers(1-3): ");
         }
-        int noOfLayers = Integer.parseInt(_noOfLayers);
-        //Loop used to check if the number of layers entered is appropriate according to the given data
-        while((noOfLayers>3)||(noOfLayers<1)){
-            if (noOfLayers>3) {
-                System.out.println("You cannot have more than 3 layers");
-            } else if(noOfLayers<0){
-                System.out.println("You must have atleast 1 layer");
-            }
-            System.out.println("Enter number of layers(1-3): ");
-            _noOfLayers = ScannerObj.cakeInput.nextLine();
-            checkInt(_noOfLayers);
-            while ((checkInt(_noOfLayers) == false)||(_noOfLayers.length()!=1)) {
-                System.out.println("Enter valid number!");
-                System.out.println("Enter number of layers(1-3): ");
-                _noOfLayers = ScannerObj.cakeInput.nextLine();
-            }
-            noOfLayers = Integer.parseInt(_noOfLayers);
-        }
+        int noOfLayers=Integer.parseInt(_noOfLayers);
         System.out.println();
         //Prompt user to enter any dietary requirements
         System.out.println("Enter any dietary requirements(if none, enter 'none'):");
         String dietaryReq = ScannerObj.cakeInput.nextLine();
+        while (dietaryReq.equals("")) {
+            System.out.println("Invalid input!");
+            System.out.println("Enter any dietary requirements(if none, enter 'none'):");
+            dietaryReq = ScannerObj.cakeInput.nextLine();
+        }
+        /*
+         * Extra feature 1:
+         * User can add a custom message of upto 20 characters to each cake for an
+         * additional $5
+         */
         System.out.println("Would you like to have a custom message written on this cake?(Additional cost $5.00)");
+        System.out.println("Enter 'yes' or 'no': ");
         String writeOn=ScannerObj.cakeInput.nextLine();
         writeOn=writeOn.toLowerCase();
         String writing="";
+        //Check if user wants custom message or not
         if(writeOn.equals("yes")){
+            //Check if custom message has maximum 20 characters
             System.out.println("Enter message(20 characters max): ");
             writing=ScannerObj.cakeInput.nextLine();
-            while (writing.length()>20) {
+            while ((writing.length()>20)||(writing.length()<1)) {
                 System.out.println("20 characters max!");
                 System.out.println("Enter again: ");
                 writing=ScannerObj.cakeInput.nextLine();
@@ -177,11 +194,13 @@ public class Advancedmethods {
         if (yesOrNo.equals("yes")) {
             cakeList.add(cake);
             cakeMessage.add(writing);
+            System.out.println("Cake added!");
         } else {}
     }
     //Method to view a list of added cakes
     public static void viewCart() throws IOException {
         float totalPrice=0;
+        //Loop to print added cakes and their respective custom messages(if any)
         for(int i=0; i<cakeList.size();++i){
             System.out.println((i+1)+") "+ cakeList.get((i)).toString());
             totalPrice+=cakeList.get((i)).getPrice();
@@ -194,23 +213,40 @@ public class Advancedmethods {
     }
     //Method to edit added cakes
     public static void editCake(int cakeToEdit)throws IOException {
-        //Removed the cake to be edited
-        cakeList.remove(cakeToEdit);
-        cakeMessage.remove(cakeToEdit);
-        //Added a new cake
+        /**
+         * Created 2 new Cake objects
+         * First one is assigned to the cake that is to be edited
+         */
+        Cake cake;
+        Cake cake2;
+        cake=cakeList.get(cakeToEdit);
         addCake();
-        // //Set the newly added cake to the cake that that the user wishes to edit
-        // cakeList.set(cakeToEdit,cakeList.get(cakeList.size()-1));
-        // cakeMessage.set(cakeToEdit, element)
-        // int toRemove = cakeList.size()-1;
-        // //Removed the newly added cake
-        // cakeList.remove(toRemove);
-        // cakeMessage.remove(toRemove);
+        //Second one is assigned to the newly added cake
+        cake2=cakeList.get(cakeList.size()-1);
+        /**
+         * Created separate Strings for each attribute of the cake
+         * Used the getter methods from Cake class to get the attributes of
+         * the new cake
+         */
+        String newFlavour=cake2.getFlavour();
+        int newLayers=cake2.getNoOfLayers();
+        String newDietaryReq=cake2.getDietaryReq();
+        float newPrice=cake2.getPrice();
+        String newMessage=cakeMessage.get(cakeList.size()-1);
+        //Used setter methods of the Cake class to assign these attributes to the first cake
+        cake.setFlavour(newFlavour);
+        cake.setNoOfLayers(newLayers);
+        cake.setDietaryReq(newDietaryReq);
+        cake.setPrice(newPrice);
+        cakeMessage.set(cakeToEdit, newMessage);
+        //Removed the new cake
+        cakeList.remove(cakeList.size()-1);
     }
     //Method to remove any added cakes
     public static void removeCake(int cakeToRemove) throws IOException {
         //Asking user for re-assurance before removing cake
         System.out.println("Are you sure you want to remove " + cakeList.get(cakeToRemove).toString() + "?");
+        System.out.println("Enter 'yes' or 'no': ");
         String yesOrNo = ScannerObj.cakeInput.nextLine();
         yesOrNo=yesOrNo.toLowerCase();
         if (yesOrNo.equals("yes")) {
@@ -229,10 +265,11 @@ public class Advancedmethods {
         //Showing the user a list of added cakes
         System.out.println("Your orders are: ");
         viewCart();
-        //prompt user for candle
+        //Ask user if they want additional candle
         System.out.println("If you wish to add a candle for $10.50, please enter yes,else, enter no");
         yesOrNo = ScannerObj.cakeInput.nextLine();
         yesOrNo=yesOrNo.toLowerCase();
+        //Used if-else conditional statements to change the total price as per user input for adding candle
         if(yesOrNo.equals("yes")){
             finalPrice=totalPrice+10.50f;
             System.out.println("Candle added!");
@@ -241,6 +278,7 @@ public class Advancedmethods {
             finalPrice=totalPrice;
         }
         System.out.println();
+        //Check if price is above $199 for implementing getPastry feature
         if (totalPrice > 199) {
             pastry=getPastry();
         }else{}
@@ -252,10 +290,16 @@ public class Advancedmethods {
             userAddress = ScannerObj.cakeInput.nextLine();
         }
         System.out.println();
+        /*
+         * Extra feature 2:
+         * Users can get express delivery(within 3 days) for their cake at an additional cost of $50
+         */
         System.out.println("Would you like an express service for your order for $50?(Delivery within 3 days)");
         System.out.println("Note: Standard delivery times are 7-14 days.");
+        System.out.println("Enter 'yes' or 'no': ");
         express = ScannerObj.cakeInput.nextLine();
         express = express.toLowerCase();
+        //Used if-else conditional statements to change the total price as per user input for express delivery
         if (express.equals("yes")) {
             System.out.println("Awesome, you skipped the long queues with Cakereations express!");
             finalPrice+=50;
@@ -276,18 +320,21 @@ public class Advancedmethods {
         System.out.println("---------");
 
         //Prompt user for confirmation to checkout
-        System.out.println("In order to confirm order, enter confirm ");
+        System.out.println("In order to confirm order, enter 'confirm' ");
         String confirmation = ScannerObj.cakeInput.nextLine();
         confirmation=confirmation.toLowerCase();
         if (confirmation.equals("confirm")) {
             generateInvoice();
             cakeList.clear();
             cakeMessage.clear();
+            System.out.println();
+            System.out.println("Welcome to Cakereations!");
+            System.out.println();
+
         }else{
             if(yesOrNo.equals("yes")){
                 finalPrice-=10.50f;
             }else{}
-            printMenu();
         }
     }
     //Method used to generate a new invoice for each order on checkout
@@ -309,6 +356,7 @@ public class Advancedmethods {
         //Created two separate strings in order to format the name of the file
         String _fileName;
         String _fileName2;
+        String z;
         //Created object to get current time
         LocalDateTime currentTime = LocalDateTime.now();
         //Formatted the time as per requirements
@@ -317,11 +365,13 @@ public class Advancedmethods {
         //Stored the formatted time to relative strings
         _fileName = currentTime.format(timeFormat);
         _fileName2 = currentTime.format(timeFormat2);
+        //Getting the timezone and storing as short abbreviation
+        z = TimeZone.getTimeZone("Australia/Melbourne").getDisplayName(false,TimeZone.SHORT);
         //Replaced ":" with "." as required
         _fileName = _fileName.replaceAll(":", ".");
 
         //Created file object
-        File file = new File(_fileName+" AEST "+_fileName2+".txt");
+        File file = new File(_fileName+" "+z+" "+_fileName2+".txt");
         //Created object to type into the file
         FileWriter fw = new FileWriter(file);
         PrintWriter pw = new PrintWriter(fw);
@@ -343,6 +393,7 @@ public class Advancedmethods {
         pw.printf("Final Price: $%.2f", finalPrice);
         pw.println();
         pw.println("--------------------End Invoice--------------------");
+        //Used loop to print specific details about each cake
         for (int i = 0; i < cakeList.size(); i++) {
             pw.println();
             pw.println();
@@ -351,6 +402,7 @@ public class Advancedmethods {
             pw.println();
             pw.println(cakeList.get(i).toString());
             String tempM=cakeMessage.get((i));
+            //Checked if there is any message entered for that specific cakes
             if (!tempM.equals("")) {
                 pw.println("Message on cake: "+ tempM);
             }else{}
@@ -360,7 +412,13 @@ public class Advancedmethods {
         pw.close();
         //Invoice end
     }
+    /**
+     * Extra feature 3:
+     * Users get  a free pastry if their total cake price 
+     * (excluding the price of the candle) is atleast $200
+     */
     public static String getPastry() {
+        //List of available flavours for pastry
         String[] pastryFlav={"chocolate","vanilla","banana","mango","red velvet","brownie"};
         System.out.println("Congratulations! You are now eligible for a free pastry!");
         System.out.println("Please choose a flavour for the pastry: ");
@@ -368,6 +426,11 @@ public class Advancedmethods {
             System.out.println((i+1)+") "+pastryFlav[i]);
         }
         String pastry= ScannerObj.cakeInput.nextLine();
+        while (pastry.equals("")) {
+            System.out.println("Invalid input!");
+            System.out.println("Please choose a flavour for the pastry: ");
+            pastry = ScannerObj.cakeInput.nextLine();
+        }
         pastry=pastry.toLowerCase();
         boolean flavCheck=checkString(pastryFlav, pastry);
         while (flavCheck == false) {
@@ -378,10 +441,12 @@ public class Advancedmethods {
         }
         return pastry;
     }
+
+    /* Method to check if the specified value
+     * is present in the array or not
+     * using Linear Search method
+    */
     public static boolean checkString(String[] arr, String toCheckValue){
-        // check if the specified element
-        // is present in the array or not
-        // using Linear Search method
         boolean test = false;
         for (String element : arr) {
             if (element.equals(toCheckValue)) {
@@ -391,14 +456,36 @@ public class Advancedmethods {
         }
         return test;
     }
-    public static boolean checkInt(String number) {
-        try {
-            Integer.parseInt(number);
-            return true;
-        } catch (Exception e) {
-            //TODO: handle exception
+
+    /* 
+     * Method to check if a String input can be parsed into an int
+     * and check if the parsed int is in the required range
+    */
+    public static boolean checkInt(String string, int lower,int upper,String error){
+        int num=0;
+        //Check if the string is empty
+        if (string.equals("")) {
             System.out.println("Invalid input!");
+            System.out.println(error);
+            return false;
         }
-        return false;
+
+        //Check if string can be parsed
+        try{
+            num=Integer.parseInt(string);
+        }catch(Exception e){
+            System.out.println("Invalid input!");
+            System.out.println(error);
+            return false;
+        }
+    
+        //Check if parsed int is in range
+        if((num>=upper)||(num<=lower)){
+            System.out.println("Invalid input!");
+            System.out.println(error);
+            return false;
+        }
+        //return true if all checks cleared
+        return true;
     }
 }
