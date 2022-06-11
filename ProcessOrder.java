@@ -11,6 +11,7 @@ public class ProcessOrder {
     private static String pastry="";
     public static float writePrice=0;
     private static String express="";
+    private static String cakeAdd="";
     private static final String flavoursInfoFile = "data/flavours.txt";
     //Menu for users to navigate through the program
     public static void printMenu() throws IOException{
@@ -52,7 +53,9 @@ public class ProcessOrder {
             }
             System.out.println();
                 addCake();
-                System.out.println("Cake added!");
+                if (cakeAdd.equals("yes")) {
+                    System.out.println("Cake added!");
+                } else {}
                 System.out.println();
                 break;
             case 'V' :
@@ -189,12 +192,11 @@ public class ProcessOrder {
         }else{}
         //Ask user for assurance before continuing
         System.out.println("In order to continue, please enter 'yes', else, enter 'no'");
-        yesOrNo = ScannerObj.cakeInput.nextLine();
-        yesOrNo=yesOrNo.toLowerCase();
-        if (yesOrNo.equals("yes")) {
+        cakeAdd = ScannerObj.cakeInput.nextLine();
+        cakeAdd=cakeAdd.toLowerCase();
+        if (cakeAdd.equals("yes")) {
             cakeList.add(cake);
             cakeMessage.add(writing);
-            System.out.println("Cake added!");
         } else {}
     }
     //Method to view a list of added cakes
